@@ -1,11 +1,136 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MedSearch</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Medical Search Engine</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: #f4f7fa;
+      color: #333;
+    }
+
+    header {
+      background-color: #208A9D;
+      padding: 20px;
+      text-align: center;
+      color: white;
+      font-size: 1.8rem;
+      font-weight: bold;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 40px auto;
+      padding: 20px;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+    }
+
+    .search-box {
+      display: flex;
+      margin-bottom: 20px;
+    }
+
+    .search-box input {
+      flex: 1;
+      padding: 12px;
+      font-size: 1rem;
+      border: 2px solid #208A9D;
+      border-radius: 8px 0 0 8px;
+      outline: none;
+    }
+
+    .search-box button {
+      padding: 12px 20px;
+      background-color: #208A9D;
+      border: none;
+      color: white;
+      font-size: 1rem;
+      border-radius: 0 8px 8px 0;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .search-box button:hover {
+      background-color: #186b7a;
+    }
+
+    .results {
+      margin-top: 30px;
+    }
+
+    .result-card {
+      border-left: 4px solid #208A9D;
+      background-color: #f9fbfd;
+      margin-bottom: 20px;
+      padding: 15px 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+
+    .result-card h3 {
+      margin-top: 0;
+      color: #208A9D;
+    }
+
+    .result-card p.score {
+      font-size: 0.9rem;
+      color: #888;
+      margin-top: 5px;
+    }
+  </style>
 </head>
 <body>
-    
+  <header>Medical Search Engine (BM25)</header>
+
+  <div class="container">
+    <div class="search-box">
+      <input type="text" id="search-input" placeholder="Enter your query..." />
+      <button onclick="performSearch()">Search</button>
+    </div>
+
+    <div class="results" id="results"></div>
+  </div>
+
+  <script>
+    async function performSearch() {
+      const query = document.getElementById('search-input').value.trim();
+      if (!query) return;
+
+      const resContainer = document.getElementById('results');
+      resContainer.innerHTML = '<p>Searching...</p>';
+
+      try {
+        const response = await fetch(`/search?query=${encodeURIComponent(query)}`);
+        const results = await response.json();
+
+        if (!results.length) {
+          resContainer.innerHTML = '<p>No results found.</p>';
+          return;
+        }
+
+        resContainer.innerHTML = results.map(result => `
+          <div class="result-card">
+            <h3>${result.title}</h3>
+            <p>${result.abstract}</p>
+            <p class="score">Score: ${result.score.toFixed(2)}</p>
+          </div>
+        `).join('');
+      } catch (error) {
+        console.error(error);
+        resContainer.innerHTML = '<p>Error fetching results.</p>';
+      }
+    }
+  </script>
 </body>
 </html>
