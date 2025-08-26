@@ -21,7 +21,7 @@ Nous avons progressivement mis en œuvre plusieurs approches de recherche d’in
 
 - BM25 (Best Matching 25), un modèle probabiliste plus robuste
 
-- SBERT (Sentence-BERT) pour un réordonnancement sémantique des résultats (semantic reranking): méthode non achevevée car très couteuse en temps de traitement 
+- SBERT (Sentence-BERT) est utilisé pour un réordonnancement sémantique des résultats (semantic re-ranking) : étant un modèle relativement coûteux en calcul, il n'est appliqué qu’aux documents déjà sélectionnés par BM25, afin de réordonner rapidement les résultats en fonction de leur similarité sémantique réelle avec la requête.
 
 ### 3. Fonctionnement du moteur final 
 Après évaluation, c’est le modèle BM25 qui a fourni les meilleurs résultats globaux, alliant pertinence et efficacité.
@@ -46,6 +46,32 @@ Chaque document contient :
 
 - abstract : résumé de l’article
 
+### 5. API Flask 
+Nous avons conçu une api avec Flask en introduisant le modèle qui a mieux fonctionné (ici BM25 avec SBERT pour réordonner (re-rank) les documents obtenus via BM25 en fonction de leur similarité sémantique réelle avec la requête.)
+```
+from flask import Flask, request, jsonify, render_template
+from bm25_model import search_bm25_sbert_rerank
+
+app = Flask(__name__)
+
+@app.route("/")
+def home():
+    return render_template("index.html")
+
+@app.route("/search", methods=["GET"])
+def search():
+    query = request.args.get("query", "")
+    if not query:
+        return jsonify({"error": "No query provided"}), 400
+
+    # Utilisation de SBERT pour reranker les résultats BM25
+    results = search_bm25_sbert_rerank(query_text=query)
+    return jsonify(results)
+
+if __name__ == "__main__":
+    app.run(debug=True)
+```
+
 ### Conclusion 
 Ce projet nous a permis de :
 
@@ -54,3 +80,4 @@ Ce projet nous a permis de :
 - Observer les avantages de modèles probabilistes comme BM25,
 
 - Constater les limites des modèles sémantiques avancés comme SBERT en environnement contraint (CPU uniquement).
+
