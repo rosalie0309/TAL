@@ -46,3 +46,11 @@ Chaque document contient :
 
 - abstract : résumé de l’article
 
+### Conclusion 
+Ce projet nous a permis de :
+
+- Mettre en pratique différents modèles classiques et modernes de recherche textuelle,
+
+- Observer les avantages de modèles probabilistes comme BM25,
+
+- Constater les limites des modèles sémantiques avancés comme SBERT en environnement contraint (CPU uniquement).
