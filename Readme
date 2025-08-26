@@ -41,4 +41,5 @@ Chaque document contient :
 
 - title : titre de l’article
 
+
 - abstract : résumé de l’article
