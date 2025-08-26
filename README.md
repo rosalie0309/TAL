@@ -30,10 +30,12 @@ Nous avons enrichi la requête utilisateur avec un dictionnaire de synonymes pou
 ### 4. Donées utilisées 
 Le corpus utilisé provient de CORD-19 (COVID-19 Open Research Dataset), une collection d’articles scientifiques liés à la pandémie. Plus précisément, nous avons exploité le round 1 du jeu TREC-COVID via la bibliothèque ir_datasets, qui fournit une interface normalisée pour accéder aux documents, aux requêtes et aux jugements de pertinence.
 
-```import ir_datasets
-
+```
+import ir_datasets
 # Chargement du jeu CORD-19 / TREC-COVID Round 1
-dataset = ir_datasets.load("cord19/trec-covid/round1")```
+dataset = ir_datasets.load("cord19/trec-covid/round1")
+
+```
 
 Chaque document contient :
 
@@ -43,3 +45,4 @@ Chaque document contient :
 
 
 - abstract : résumé de l’article
+
