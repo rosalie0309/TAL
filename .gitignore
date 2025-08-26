@@ -1,2 +1,3 @@
-echo "tokenized_corpus.pkl" >> .gitignore
-echo "api/documents_cleaned.csv" >> .gitignore
+*.csv
+*.pkl
+

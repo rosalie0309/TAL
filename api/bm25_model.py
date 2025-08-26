@@ -8,8 +8,47 @@ with open("bm25_model.pkl", "rb") as f:
 
 documents_df = pd.read_csv("documents_cleaned.csv")
 
+synonym_dict = {
+    "covid": ["covid-19", "coronavirus", "sars-cov-2", "sars cov 2", "ncov", "2019-ncov"],
+    "origin": ["source", "emergence", "evolution", "beginning", "birth"],
+    "pandemic": ["outbreak", "epidemic", "global health crisis"],
+    "vaccine": ["vaccination", "immunization", "injection"],
+    "transmission": ["spread", "contagion", "infection path", "propagation"],
+    "face mask": ["mask", "surgical mask", "protective mask", "n95"],
+    "lockdown": ["shutdown", "quarantine", "confinement", "isolation"],
+    "hospital": ["clinic", "medical center", "health facility"],
+    "test": ["diagnostic", "screening", "pcr", "swab"],
+    "treatment": ["therapy", "medication", "drug", "remedy", "intervention"],
+    "symptom": ["sign", "clinical sign", "manifestation"],
+    "respiratory": ["breathing", "lung", "pulmonary", "airway"],
+    "healthcare": ["medical care", "health system", "hospital system"],
+    "death": ["mortality", "fatality", "loss of life"],
+    "prevention": ["protection", "avoidance", "barrier", "control measures"],
+    "mutation": ["variant", "strain", "genetic change", "genomic shift"],
+    "children": ["kids", "infants", "minors", "young people"],
+    "elderly": ["older adults", "seniors", "aged population", "geriatrics"],
+    "vulnerable": ["at-risk", "immunocompromised", "fragile", "susceptible"],
+    "public health": ["population health", "community health", "health policy"]
+}
+
+
+
+## Fonction pour l'utiliser 
+def enrich_with_synonyms(text, synonym_dict):
+    text = text.lower()
+    for key, synonyms in synonym_dict.items():
+        for synonym in synonyms:
+            if synonym in text:
+                text = text.replace(synonym, key)
+    return text
+
+
 def search_bm25(query_text, top_k=10):
+    
+    # On applique le même prétraitement qu'on a appliqué sur nos données lors de l'entrainement du model 
+    query_text = enrich_with_synonyms(query_text, synonym_dict)
     tokenized_query = word_tokenize(query_text.lower())
+
     scores = bm25.get_scores(tokenized_query)
     top_indices = sorted(range(len(scores)), key=lambda i: scores[i], reverse=True)[:top_k]
 

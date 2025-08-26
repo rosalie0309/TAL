@@ -119,13 +119,17 @@
           return;
         }
 
-        resContainer.innerHTML = results.map(result => `
-          <div class="result-card">
-            <h3>${result.title}</h3>
-            <p>${result.abstract}</p>
-            <p class="score">Score: ${result.score.toFixed(2)}</p>
-          </div>
-        `).join('');
+        resContainer.innerHTML = results.map((result, index) => {
+  const score = result.semantic_score ?? result.score;
+  return `
+    <div class="result-card">
+      <h3>${index + 1}. ${result.title}</h3>
+      <p>${result.abstract}</p>
+      <p class="score">Score: ${score.toFixed(2)}</p>
+    </div>
+  `;
+}).join('');
+
       } catch (error) {
         console.error(error);
         resContainer.innerHTML = '<p>Error fetching results.</p>';
