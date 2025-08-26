@@ -1,3 +1,7 @@
 *.csv
 *.pkl
 
+api/*.csv
+api/*.pkl
+
+
